@@ -35,7 +35,8 @@
         }
     </style>
 </head>
-    <h1>Population in 1980</h1>
+<h1>Population Change between 2000 and 2010</h1>
+
 <body>
     <div id="tooltip"></div>
     <script>
@@ -107,13 +108,13 @@
                 // if the data is scaled using log scale
             let logScale = d3.scaleLog()
                 .domain(d3.extent(geojson.features, (d) => {
-                    return d['properties']['POP1980']
+                    return d['properties']['POPCH0_10']
                 }))
 
             // if the data is scaled using linear scale
             let linearScale = d3.scaleLinear()
                 .domain(d3.extent(geojson.features, (d) => {
-                    return d['properties']['POP1980']
+                    return d['properties']['POPCH00_10']
                 }))
 
             /*-------------------------------------------------------*/
@@ -135,19 +136,18 @@
                 .enter()
                 .append("path")
                 .attr("d", d => geoPath_generator(d))
-                .attr("fill", d => colorInterpolator(logScale(d['properties']['POP1980'])))
-                //.attr("fill", d => colorInterpolator(linearScale(d['properties']['POP1980'])))
+                // .attr("fill", d => colorInterpolator(logScale(d['properties']['POPCH00_10'])))
+                .attr("fill", d => colorInterpolator(linearScale(d['properties']['POPCH00_10'])))
                 .on("mouseenter", (m, d) => {
                     tooltip.transition()
                         .duration(200)
                         .style("opacity", .5)
                     tooltip.html(d['properties']['TOWN']+
-                            "<table><tbody><tr><td> Population: " + 
-                            d['properties']['POP1980'] +
+                            "<table><tbody><tr><td> Population Change: " + 
+                            d['properties']['POPCH00_10'] +
                             "</td></tr></tbody></table>")
-                        // .html(d['properties']['POP1980'])
-                        .style("left", m.clientX + "px")
-                        .style("top", m.clientY + "px");
+                            .style("left", m.clientX + "px")
+                            .style("top", m.clientY + "px");
                 })
                 .on("mousemove", (m, d) => {
                     tooltip.style("opacity", .9)
