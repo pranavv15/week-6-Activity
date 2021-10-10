@@ -35,7 +35,8 @@
         }
     </style>
 </head>
-
+    <h1>Population in 1980</h1>
+    <h2>By Pranav Vinod</h2>
 <body>
     <div id="tooltip"></div>
     <script>
@@ -74,9 +75,9 @@
             /*-----------------Topojson data handling----------------*/
             /*-------------------------------------------------------*/
             // if topojson file is imported we need to 
-            // convert topology data to geojson 
+            // convert topology data to geojson because d3 cannot handle topojson
             const geojson = topojson.feature(topo_data, topo_data.objects.ma);
-
+            console.log(geojson)
             /*-------------------------------------------------------*/
             /*----------------------Projections----------------------*/
             /*-------------------------------------------------------*/
@@ -107,13 +108,13 @@
                 // if the data is scaled using log scale
             let logScale = d3.scaleLog()
                 .domain(d3.extent(geojson.features, (d) => {
-                    return d['properties']['POP2010']
+                    return d['properties']['POP1980']
                 }))
 
             // if the data is scaled using linear scale
             let linearScale = d3.scaleLinear()
                 .domain(d3.extent(geojson.features, (d) => {
-                    return d['properties']['POP2010']
+                    return d['properties']['POP1980']
                 }))
 
             /*-------------------------------------------------------*/
@@ -135,13 +136,17 @@
                 .enter()
                 .append("path")
                 .attr("d", d => geoPath_generator(d))
-                //.attr("fill", d => colorInterpolator(logScale(d['properties']['POP2010'])))
-                .attr("fill", d => colorInterpolator(linearScale(d['properties']['POP2010'])))
+                .attr("fill", d => colorInterpolator(logScale(d['properties']['POP1980'])))
+                //.attr("fill", d => colorInterpolator(linearScale(d['properties']['POP1980'])))
                 .on("mouseenter", (m, d) => {
                     tooltip.transition()
                         .duration(200)
-                        .style("opacity", .9)
-                    tooltip.html(d['properties']['TOWN'])
+                        .style("opacity", .5)
+                    tooltip.html(d['properties']['TOWN']+
+                            "<table><tbody><tr><td> Population: " + 
+                            d['properties']['POP1980'] +
+                            "</td></tr></tbody></table>")
+                        // .html(d['properties']['POP1980'])
                         .style("left", m.clientX + "px")
                         .style("top", m.clientY + "px");
                 })
@@ -151,7 +156,7 @@
                 .on("mouseout", (m, d) => {
                     tooltip.transition()
                         .duration(200)
-                        .style("opacity", 0)
+                        .style("opacity", 1)
                 })
         })
     </script>
